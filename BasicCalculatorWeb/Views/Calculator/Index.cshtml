@@ -1,0 +1,93 @@
+﻿@{
+    ViewData["Title"] = "Calculator";
+}
+
+@model CombinedModel
+
+<script src="~/lib/jquery/dist/jquery.js"></script>
+<script>
+    $(function () {
+        $("button[name='op']").click(function () {
+            $("#Calculation_Operator").val(this.id);
+            $("button[name='op']").removeClass("focus");
+            $(this).addClass("focus");
+
+        });
+
+        $("button[name='clear']").click(function () {
+            $("#Calculator").trigger("reset");
+            $("#Calculation_Value1").val("");
+            $("#Calculation_Operator").val("");
+            $("#Calculation_Value2").val("");
+            $("#Calculation_Message").val("");
+            $("button[name='op']").removeClass("focus");
+        });
+    });
+</script>
+
+<div class="panel panel-default">
+    <div class="panel-body">
+        <form asp-controller="Calculator" asp-action="Index" method="post" id="Calculator">
+            <div class="form-group">
+                <label asp-for="Calculation.Value1"></label>
+                <input type="number" asp-for="Calculation.Value1" class="form-control" step="any" />
+            </div>
+            <div class="form-group btn-toolbar btn-group-lg">
+                @foreach (var source in (Calculation.Operators[])Enum.GetValues(typeof(Calculation.Operators)))
+                {
+                    <button type="button" name="op" class="btn btn-primary" id="@((int)source)">@Calculation.GetSymbol(source)</button>
+                }
+                <input type="hidden" asp-for="Calculation.Operator" />
+            </div>
+            <div class="form-group">
+                <label asp-for="Calculation.Value2"></label>
+                <input type="number" asp-for="Calculation.Value2" class="form-control" step="any" />
+            </div>
+            <div class="form-group btn-toolbar btn-group-lg">
+                <input type="submit" class="btn btn-success col-xs-2" value="=" asp-action="Index" />
+                <button type="button" class="btn btn-danger" name="clear">AC</button>
+            </div>
+            <div class="form-group">
+                <label asp-for="Calculation.Message"></label>
+                <input type="text" disabled="disabled" class="form-control" asp-for="Calculation.Message" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<p>Latest @RequestLog.Limit requests:</p>
+<div class="panel panel-default">
+    <table class="table">
+        <thead>
+            @{ BasicCalculatorWeb.Models.RequestLog dummyModel = null; }
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => dummyModel.IPAddress)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => dummyModel.Calculation)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => dummyModel.RequestDate)
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.RequestLogs)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.IPAddress)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Calculation)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.RequestDate)
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
