@@ -6,14 +6,21 @@
 
 <script src="~/lib/jquery/dist/jquery.js"></script>
 <script>
-    $(function () {
+    $(document).ready(function () {
+        // Format dates to users locale
+        $(".formatted-date").each(function () {
+            var date = new Date($(this).html().trim());
+            $(this).html(date.toLocaleString());
+        });
+
+        // Keep selected operator button focused
         $("button[name='op']").click(function () {
             $("#Calculation_Operator").val(this.id);
             $("button[name='op']").removeClass("focus");
             $(this).addClass("focus");
-
         });
 
+        // Clear form on AC press
         $("button[name='clear']").click(function () {
             $("#Calculator").trigger("reset");
             $("#Calculation_Value1").val("");
@@ -83,7 +90,7 @@
                     <td>
                         @Html.DisplayFor(modelItem => item.Calculation)
                     </td>
-                    <td>
+                    <td class="formatted-date">
                         @Html.DisplayFor(modelItem => item.RequestDate)
                     </td>
                 </tr>

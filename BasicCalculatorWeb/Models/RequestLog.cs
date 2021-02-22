@@ -18,6 +18,7 @@ namespace BasicCalculatorWeb.Models
         public String Calculation { get; set; }
 
         [Display(Name = "Date:")]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-ddTHH:mm:ss}")] // allow client to format dates
         public DateTime RequestDate { get; set; }
     }
 }
